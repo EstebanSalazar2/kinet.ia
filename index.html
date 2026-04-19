@@ -107,6 +107,27 @@ header {
 .b-live { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(52,211,153,0.2); }
 .b-live::before { content: '●'; font-size: 8px; }
 
+.authors-wrap {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+  border-right: 1px solid var(--border);
+  padding-right: 14px; margin-right: 4px;
+}
+.authors-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--text-3);
+}
+.authors-names { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.author-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 11px;
+  border-radius: 100px;
+  font-size: 12px; font-weight: 600;
+  background: rgba(167,139,250,0.08);
+  border: 1px solid rgba(167,139,250,0.2);
+  color: var(--purple);
+  white-space: nowrap;
+}
+
 /* ── WELCOME BANNER ── */
 .welcome-banner {
   background: linear-gradient(135deg, rgba(167,139,250,0.1) 0%, rgba(52,211,153,0.06) 100%);
@@ -588,6 +609,13 @@ select:focus { border-color: var(--purple); }
     </div>
   </div>
   <div class="header-right">
+    <div class="authors-wrap">
+      <div class="authors-label">Autores</div>
+      <div class="authors-names">
+        <span class="author-tag">✍️ Esteban Llano</span>
+        <span class="author-tag">✍️ Milthon Garcia</span>
+      </div>
+    </div>
     <span class="badge b-phase">Fase 3</span>
     <span class="badge b-live">Activo</span>
   </div>
