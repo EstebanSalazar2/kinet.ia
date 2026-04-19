@@ -1,0 +1,1593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinet IA — Tu Asistente Deportivo Inteligente</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --card: #1c2230;
+  --border: rgba(255,255,255,0.08);
+  --border-hi: rgba(255,255,255,0.18);
+  --purple: #a78bfa;
+  --purple-dim: rgba(167,139,250,0.12);
+  --purple-glow: rgba(167,139,250,0.3);
+  --teal: #34d399;
+  --teal-dim: rgba(52,211,153,0.1);
+  --amber: #fbbf24;
+  --amber-dim: rgba(251,191,36,0.1);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.1);
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.1);
+  --text: #e6edf3;
+  --text-2: rgba(230,237,243,0.6);
+  --text-3: rgba(230,237,243,0.35);
+  --r: 16px;
+  --r-sm: 10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background:
+    radial-gradient(ellipse 700px 500px at 80% -10%, rgba(167,139,250,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 600px 400px at -10% 80%, rgba(52,211,153,0.06) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── LAYOUT ── */
+.shell {
+  position: relative; z-index: 1;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ── HEADER ── */
+header {
+  padding: 28px 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.logo-wrap { display: flex; align-items: center; gap: 14px; }
+
+.logo-mark {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-size: 22px; font-weight: 900;
+  color: #fff;
+  box-shadow: 0 0 28px var(--purple-glow);
+  flex-shrink: 0;
+}
+
+.logo-name {
+  font-family: 'Nunito', sans-serif;
+  font-size: 22px; font-weight: 900;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.logo-tagline { font-size: 12px; color: var(--text-2); margin-top: 1px; }
+
+.header-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px;
+  border-radius: 100px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+}
+.b-phase { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(167,139,250,0.2); }
+.b-live { background: var(--teal-dim); color: var(--teal); border: 1px solid rgba(52,211,153,0.2); }
+.b-live::before { content: '●'; font-size: 8px; }
+
+/* ── WELCOME BANNER ── */
+.welcome-banner {
+  background: linear-gradient(135deg, rgba(167,139,250,0.1) 0%, rgba(52,211,153,0.06) 100%);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: var(--r);
+  padding: 22px 26px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.welcome-icon { font-size: 32px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+.welcome-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 18px; font-weight: 800;
+  margin-bottom: 4px;
+  color: var(--purple);
+}
+.welcome-text { font-size: 14px; color: var(--text-2); line-height: 1.65; }
+
+/* ── NAV ── */
+.nav-tabs {
+  display: flex; gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 5px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+}
+
+.nav-tab {
+  flex: 1; min-width: 120px;
+  padding: 10px 14px;
+  border-radius: var(--r-sm);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 600;
+  color: var(--text-2);
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+  white-space: nowrap;
+}
+.nav-tab:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.nav-tab.active { background: var(--purple-dim); color: var(--purple); border: 1px solid rgba(167,139,250,0.25); }
+.tab-emoji { font-size: 15px; }
+
+/* ── PANELS ── */
+.panel { display: none; animation: fadeUp 0.25s ease; }
+.panel.active { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* ── SECTION HEADER ── */
+.sec-head { margin-bottom: 20px; }
+.sec-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 24px; font-weight: 900;
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+.sec-sub { font-size: 14px; color: var(--text-2); }
+
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px 22px;
+  margin-bottom: 16px;
+}
+.card-label {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--text-3);
+  margin-bottom: 14px;
+}
+
+/* ── INFO BOX ── */
+.info-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--purple);
+  border-radius: var(--r-sm);
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.7;
+  margin-top: 10px;
+  min-height: 60px;
+  transition: border-left-color 0.3s;
+}
+.info-box.alert { border-left-color: var(--red); }
+.info-box.warn  { border-left-color: var(--amber); }
+.info-box.ok    { border-left-color: var(--teal); }
+
+/* ── GRIDS ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+@media(max-width:720px) {
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .nav-tab { min-width: 100%; justify-content: center; }
+}
+
+/* ── METRIC CARD ── */
+.metric-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 16px;
+  text-align: center;
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: default;
+}
+.metric-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
+.metric-val {
+  font-family: 'Nunito', sans-serif;
+  font-size: 30px; font-weight: 900;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.metric-lbl { font-size: 12px; color: var(--text-2); }
+.metric-desc { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+
+/* ── SLIDERS ── */
+.slider-row {
+  margin-bottom: 16px;
+}
+.slider-top {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 6px;
+}
+.slider-name { font-size: 14px; font-weight: 600; color: var(--text); }
+.slider-hint { font-size: 11px; color: var(--text-3); }
+.slider-val-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--purple-dim);
+  border: 2px solid rgba(167,139,250,0.3);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px; font-weight: 900;
+  color: var(--purple);
+  transition: all 0.2s;
+}
+.slider-wrap { display: flex; align-items: center; gap: 12px; }
+.slider-wrap input { flex: 1; }
+.slider-emoji-row {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: var(--text-3);
+  padding: 2px 2px 0;
+}
+
+input[type=range] {
+  -webkit-appearance: none; appearance: none;
+  flex: 1; height: 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.1);
+  outline: none; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--purple);
+  box-shadow: 0 0 10px var(--purple-glow);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+/* ── CHIPS ── */
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px; font-weight: 700;
+}
+.chip-purple { background: var(--purple-dim); color: var(--purple); }
+.chip-teal   { background: var(--teal-dim); color: var(--teal); }
+.chip-amber  { background: var(--amber-dim); color: var(--amber); }
+.chip-red    { background: var(--red-dim); color: var(--red); }
+.chip-blue   { background: var(--blue-dim); color: var(--blue); }
+
+/* ── PROGRESS ── */
+.prog-wrap { margin: 8px 0; }
+.prog-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-2); margin-bottom: 5px; }
+.prog-track { height: 8px; background: rgba(255,255,255,0.07); border-radius: 4px; overflow: hidden; }
+.prog-fill  { height: 100%; border-radius: 4px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+
+/* ── SEPARATOR ── */
+.sep { height: 1px; background: var(--border); margin: 16px 0; }
+
+/* ── SELECT ── */
+select {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  padding: 10px 14px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+select:focus { border-color: var(--purple); }
+
+/* ── DATABASE VISUAL ── */
+.db-table-visual {
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.db-table-head {
+  background: rgba(167,139,250,0.15);
+  padding: 10px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px; font-weight: 800;
+  color: var(--purple);
+  display: flex; align-items: center; gap: 8px;
+}
+.db-row {
+  display: flex; align-items: stretch;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+.db-row:nth-child(even) { background: rgba(255,255,255,0.015); }
+.db-col-name {
+  flex: 1.2; padding: 10px 14px;
+  font-weight: 600; color: var(--text);
+  border-right: 1px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.db-col-type {
+  flex: 1; padding: 10px 14px;
+  color: var(--amber); font-size: 12px;
+  border-right: 1px solid var(--border);
+  display: flex; align-items: center;
+  font-weight: 600;
+}
+.db-col-desc {
+  flex: 2; padding: 10px 14px;
+  color: var(--text-2); font-size: 12px;
+  display: flex; align-items: center;
+}
+.db-row-emoji { font-size: 14px; }
+
+/* ── ATHLETE RECORD ── */
+.athlete-record {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 18px 20px;
+}
+.rec-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 16px;
+}
+.avatar {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px; font-weight: 900;
+  color: #fff;
+  flex-shrink: 0;
+}
+.rec-name { font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 800; margin-bottom: 2px; }
+.rec-sport { font-size: 13px; color: var(--text-2); }
+
+.rec-fields { display: flex; flex-direction: column; gap: 10px; }
+.rec-field {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+}
+.rec-field-icon { font-size: 18px; flex-shrink: 0; }
+.rec-field-label { font-size: 12px; color: var(--text-3); }
+.rec-field-value { font-size: 14px; font-weight: 600; }
+.rec-field-note { font-size: 12px; color: var(--text-2); margin-top: 2px; line-height: 1.4; }
+
+/* ── MEDIA ITEMS ── */
+.media-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  margin-bottom: 10px;
+  transition: border-color 0.2s, transform 0.15s;
+  cursor: pointer;
+}
+.media-item:hover { border-color: var(--border-hi); transform: translateX(4px); }
+.media-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.media-info { flex: 1; }
+.media-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.media-desc { font-size: 12px; color: var(--text-2); line-height: 1.5; margin-bottom: 7px; }
+.media-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+.media-priority { font-size: 11px; font-weight: 700; text-align: right; flex-shrink: 0; }
+
+/* ── PROFILE TABS ── */
+.ptabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+.ptab {
+  padding: 8px 16px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-2);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.ptab:hover { border-color: var(--border-hi); color: var(--text); }
+.ptab.active { background: var(--purple-dim); color: var(--purple); border-color: rgba(167,139,250,0.3); }
+
+/* ── PROFILE CARD ── */
+.profile-card { }
+.crisis-box {
+  background: rgba(248,113,113,0.06);
+  border: 1px solid rgba(248,113,113,0.18);
+  border-radius: var(--r-sm);
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+.crisis-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--red); margin-bottom: 4px; }
+.crisis-text { font-size: 13px; color: rgba(255,160,170,0.9); }
+
+.kinet-response {
+  background: var(--purple-dim);
+  border: 1px solid rgba(167,139,250,0.2);
+  border-radius: var(--r-sm);
+  padding: 16px 18px;
+  font-size: 14px; line-height: 1.7;
+  color: #e8dfff;
+  margin-top: 10px;
+}
+.kinet-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--purple); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+
+.adj-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--teal-dim);
+  border: 1px solid rgba(52,211,153,0.15);
+  color: var(--teal);
+  font-size: 12px; font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 100px;
+  margin: 3px 4px 3px 0;
+}
+
+/* ── CEM ── */
+.cem-big {
+  font-family: 'Nunito', sans-serif;
+  font-size: 64px; font-weight: 900;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.cem-dim-row {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 10px;
+}
+.cem-dim-label { font-size: 13px; min-width: 100px; font-weight: 600; }
+.cem-track { flex: 1; height: 8px; background: rgba(255,255,255,0.07); border-radius: 4px; overflow: hidden; }
+.cem-fill { height: 100%; border-radius: 4px; transition: width 0.5s cubic-bezier(.4,0,.2,1); }
+.cem-num { font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 800; min-width: 36px; text-align: right; }
+
+/* ── ALGO VISUAL ── */
+.algo-step {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.algo-step:hover { border-color: var(--border-hi); }
+.algo-num {
+  width: 32px; height: 32px;
+  border-radius: 10px;
+  background: var(--purple-dim);
+  border: 1px solid rgba(167,139,250,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px; font-weight: 900;
+  color: var(--purple);
+  flex-shrink: 0;
+}
+.algo-content { flex: 1; }
+.algo-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+.algo-desc { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+.algo-formula {
+  margin-top: 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--teal);
+}
+.algo-formula .label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; display: block; }
+
+/* ── FACT BOX ── */
+.fact-box {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px;
+  background: rgba(251,191,36,0.06);
+  border: 1px solid rgba(251,191,36,0.2);
+  border-radius: var(--r-sm);
+  margin-top: 14px;
+}
+.fact-icon { font-size: 20px; flex-shrink: 0; }
+.fact-text { font-size: 13px; color: rgba(251,220,136,0.9); line-height: 1.55; }
+
+/* ── MODULE FOOTER ── */
+.module-footer {
+  border-top: 1px solid var(--border);
+  padding-top: 12px; margin-top: 14px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; gap: 8px;
+}
+.module-footer-text { font-size: 11px; color: var(--text-3); }
+
+/* ── SERVICE CARDS ── */
+.service-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 16px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.service-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
+.service-name { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+.service-desc { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+
+/* ── TOOLTIP ── */
+[data-tip] { position: relative; cursor: help; }
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  background: #2d3748; border: 1px solid var(--border-hi);
+  color: var(--text); font-size: 12px; font-weight: 500;
+  padding: 7px 12px; border-radius: 8px;
+  white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity 0.2s;
+  z-index: 100; max-width: 220px; white-space: normal; text-align: center; line-height: 1.4;
+}
+[data-tip]:hover::after { opacity: 1; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+<!-- HEADER -->
+<header>
+  <div class="logo-wrap">
+    <div class="logo-mark">K</div>
+    <div>
+      <div class="logo-name">Kinet IA</div>
+      <div class="logo-tagline">Tu asistente de entrenamiento inteligente · Fase 3</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge b-phase">Fase 3</span>
+    <span class="badge b-live">Activo</span>
+  </div>
+</header>
+
+<!-- WELCOME BANNER -->
+<div class="welcome-banner">
+  <div class="welcome-icon">👋</div>
+  <div>
+    <div class="welcome-title">¡Bienvenido a Kinet IA!</div>
+    <div class="welcome-text">
+      Esta es la sala de control de tu asistente deportivo. Aquí puedes ver cómo funciona por dentro: cómo ajusta tu entrenamiento según cómo te sientes, qué datos guarda sobre ti, y cómo toma decisiones de forma honesta y cuidadosa. Explora cada sección con las pestañas de abajo.
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showPanel('motor',this)">
+    <span class="tab-emoji">⚡</span> Cómo ajusta tu entrenamiento
+  </button>
+  <button class="nav-tab" onclick="showPanel('db',this)">
+    <span class="tab-emoji">📦</span> Qué datos guarda
+  </button>
+  <button class="nav-tab" onclick="showPanel('media',this)">
+    <span class="tab-emoji">🎬</span> Qué recursos te sugiere
+  </button>
+  <button class="nav-tab" onclick="showPanel('perfiles',this)">
+    <span class="tab-emoji">🧠</span> Cómo responde a cada atleta
+  </button>
+  <button class="nav-tab" onclick="showPanel('cem',this)">
+    <span class="tab-emoji">⚖️</span> Principios éticos
+  </button>
+  <button class="nav-tab" onclick="showPanel('algo',this)">
+    <span class="tab-emoji">📐</span> Cómo calcula todo
+  </button>
+</div>
+
+<!-- ═══════════ PANEL 1: MOTOR ═══════════ -->
+<div id="panel-motor" class="panel active">
+  <div class="sec-head">
+    <div class="sec-title">⚡ ¿Cómo ajusta Kinet IA tu entrenamiento?</div>
+    <div class="sec-sub">Mueve los controles y observa en tiempo real cómo cambia el plan. No hay valores correctos o incorrectos — cada cuerpo es diferente.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label">¿Cómo te sientes hoy? Ajusta cada valor</div>
+
+      <div class="slider-row">
+        <div class="slider-top">
+          <span class="slider-name">😴 Fatiga física</span>
+          <span class="slider-hint">¿Qué tan cansado está tu cuerpo?</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="fatigue" min="0" max="10" value="3" step="1" oninput="recalculate()">
+          <div class="slider-val-badge" id="fv">3</div>
+        </div>
+        <div class="slider-emoji-row"><span>😃 Descansado</span><span>💤 Agotado</span></div>
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-top">
+          <span class="slider-name">🌀 Desorientación emocional</span>
+          <span class="slider-hint">¿Sientes la mente dispersa o confusa?</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="emotion" min="0" max="10" value="2" step="1" oninput="recalculate()">
+          <div class="slider-val-badge" id="ev">2</div>
+        </div>
+        <div class="slider-emoji-row"><span>🧘 Muy claro</span><span>🌪️ Muy confuso</span></div>
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-top">
+          <span class="slider-name">🔋 Preparación (Readiness)</span>
+          <span class="slider-hint">¿Sientes que tu cuerpo está listo para entrenar?</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="readiness" min="0" max="10" value="8" step="1" oninput="recalculate()">
+          <div class="slider-val-badge" id="rv">8</div>
+        </div>
+        <div class="slider-emoji-row"><span>🪫 Sin energía</span><span>⚡ Listo al 100%</span></div>
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-top">
+          <span class="slider-name">💪 Esfuerzo percibido (RPE)</span>
+          <span class="slider-hint">¿Cómo de duro te parece entrenar hoy?</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="rpe" min="1" max="10" value="7" step="1" oninput="recalculate()">
+          <div class="slider-val-badge" id="rpv">7</div>
+        </div>
+        <div class="slider-emoji-row"><span>🌿 Muy fácil</span><span>🔥 Máximo</span></div>
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-top">
+          <span class="slider-name">📅 Semana del mesociclo</span>
+          <span class="slider-hint">¿En qué semana de tu plan estás?</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="week" min="1" max="16" value="3" step="1" oninput="recalculate()">
+          <div class="slider-val-badge" id="wv">3</div>
+        </div>
+        <div class="slider-emoji-row"><span>🟢 Semana 1</span><span>🏁 Semana 16</span></div>
+      </div>
+
+      <div class="slider-row">
+        <div class="slider-top">
+          <span class="slider-name">📊 Carga base planeada</span>
+          <span class="slider-hint">¿Cuánta carga tenía previsto tu plan original? (%)</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="lbase" min="40" max="100" value="75" step="5" oninput="recalculate()">
+          <div class="slider-val-badge" id="lv">75</div>
+        </div>
+        <div class="slider-emoji-row"><span>40% mínimo</span><span>100% máximo</span></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="grid-2" style="margin-bottom:14px">
+        <div class="metric-card" data-tip="La carga que Kinet IA recomienda hoy, ajustada a cómo te sientes">
+          <div class="metric-val" id="m-load" style="color:var(--purple)">72%</div>
+          <div class="metric-lbl">Carga recomendada hoy</div>
+          <div class="metric-desc">Del plan original</div>
+        </div>
+        <div class="metric-card" data-tip="Puntuación de bienestar general (0-100). Más alto = mejor estado">
+          <div class="metric-val" id="m-cem" style="color:var(--teal)">84</div>
+          <div class="metric-lbl">Bienestar general</div>
+          <div class="metric-desc">Escala 0–100</div>
+        </div>
+        <div class="metric-card" data-tip="Días de descanso activo sugeridos antes de volver a alta intensidad">
+          <div class="metric-val" id="m-rec" style="color:var(--amber)">1d</div>
+          <div class="metric-lbl">Días de recuperación</div>
+          <div class="metric-desc">Sugeridos</div>
+        </div>
+        <div class="metric-card" data-tip="Rango de semanas ideal para tu macrociclo completo, según tu readiness">
+          <div class="metric-val" id="m-macro" style="font-size:16px">12–14 sem</div>
+          <div class="metric-lbl">Duración del plan</div>
+          <div class="metric-desc">Macrociclo</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:0">
+        <div class="card-label">Estado detectado por Kinet IA</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span class="chip" id="chip-estado">Calculando...</span>
+          <span class="chip chip-purple" id="chip-delta">Ajuste: —</span>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Carga que recibirás hoy</span><span id="prog-load-lbl">72%</span></div>
+          <div class="prog-track"><div class="prog-fill" id="prog-load" style="width:72%;background:var(--purple)"></div></div>
+        </div>
+        <div class="prog-wrap">
+          <div class="prog-label"><span>Tu bienestar general</span><span id="prog-cem-lbl">84%</span></div>
+          <div class="prog-track"><div class="prog-fill" id="prog-cem" style="width:84%;background:var(--teal)"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box" id="motor-output" style="font-size:14px;line-height:1.75">Calculando tu plan personalizado...</div>
+
+  <div class="fact-box">
+    <div class="fact-icon">💡</div>
+    <div class="fact-text"><strong>¿Sabías esto?</strong> El "Ajuste (Δ)" que ves arriba es la diferencia entre lo que tenías planeado y lo que Kinet IA recomienda hoy. Un Δ negativo significa que necesitas un poco de descanso; uno positivo significa que estás listo para más.</div>
+  </div>
+</div>
+
+<!-- ═══════════ PANEL 2: BASE DE DATOS ═══════════ -->
+<div id="panel-db" class="panel">
+  <div class="sec-head">
+    <div class="sec-title">📦 ¿Qué datos guarda Kinet IA?</div>
+    <div class="sec-sub">Kinet IA almacena solo lo necesario para ayudarte mejor. Aquí puedes ver exactamente qué información guarda y para qué sirve cada campo.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label">Tablas de información — elige una para explorarla</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+        <button class="ptab active" onclick="showSchema('users',this)">👤 Tu perfil</button>
+        <button class="ptab" onclick="showSchema('sessions',this)">🏃 Sesiones</button>
+        <button class="ptab" onclick="showSchema('emotional',this)">💙 Emociones</button>
+        <button class="ptab" onclick="showSchema('moral',this)">⚖️ Ética</button>
+        <button class="ptab" onclick="showSchema('media',this)">🎬 Contenidos</button>
+      </div>
+      <div id="schema-display"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Ficha real de un atleta — elige uno</div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:13px;color:var(--text-2);display:block;margin-bottom:7px">Atleta de ejemplo:</label>
+        <select id="db-athlete" onchange="updateDbQuery()">
+          <option value="ana">Ana Torres — Velocista 100m</option>
+          <option value="carlos">Carlos Ruiz — Futbolista</option>
+          <option value="maya">Maya Chen — Nadadora 200m</option>
+        </select>
+      </div>
+      <div id="db-output"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Los tres grandes módulos de Kinet IA</div>
+    <div class="grid-3" style="margin-top:4px">
+      <div class="service-card">
+        <div class="service-name" style="color:var(--purple)">⚡ CicloPlanner</div>
+        <div class="service-desc">Diseña y ajusta tu plan de entrenamiento semana a semana según tu progreso real. Nunca te pone más carga de la que puedes manejar de forma segura.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-name" style="color:var(--teal)">💙 EmoMap + EthicsEngine</div>
+        <div class="service-desc">Detecta cómo te sientes emocionalmente y asegura que cada respuesta de Kinet IA sea honesta, empática y respetuosa. Si la situación lo requiere, te conecta con una persona real.</div>
+      </div>
+      <div class="service-card">
+        <div class="service-name" style="color:var(--amber)">🎬 ContentEngine</div>
+        <div class="service-desc">Elige los videos, audios e imágenes que mejor se adaptan a tu estado del día. Cada recomendación tiene un motivo clínico y motivacional detrás.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PANEL 3: ORQUESTADOR ═══════════ -->
+<div id="panel-media" class="panel">
+  <div class="sec-head">
+    <div class="sec-title">🎬 ¿Qué recursos te sugiere Kinet IA?</div>
+    <div class="sec-sub">Según cómo te sientes, Kinet IA selecciona videos, audios e imágenes que pueden ayudarte. Cambia el estado y la intensidad para ver qué cambiaría.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label">¿Cómo estás hoy?</div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:13px;color:var(--text-2);display:block;margin-bottom:7px">Tu estado de ánimo ahora mismo:</label>
+        <select id="mood" onchange="orchestrate()">
+          <option value="low_motivation">😞 Baja motivación — no tengo ganas</option>
+          <option value="tech_doubt">🤔 Duda técnica — no sé si lo hago bien</option>
+          <option value="overtraining">😵 Sobreentrenamiento — me pasé de la raya</option>
+          <option value="high_confidence">🚀 Alta confianza — me siento imparable</option>
+          <option value="pre_comp_anxiety">😰 Ansiedad pre-competencia — los nervios</option>
+          <option value="injury_fear">🩹 Miedo a lesión — me frena el miedo</option>
+        </select>
+      </div>
+      <div class="slider-row">
+        <div class="slider-top">
+          <span class="slider-name">¿Qué tan intenso es ese estado?</span>
+        </div>
+        <div class="slider-wrap">
+          <input type="range" id="mood-int" min="1" max="5" value="3" step="1" oninput="orchestrate()">
+          <div class="slider-val-badge" id="miv">3</div>
+        </div>
+        <div class="slider-emoji-row"><span>Leve</span><span>Máximo</span></div>
+      </div>
+      <div class="sep"></div>
+      <div id="media-state-display"></div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-label">Recursos recomendados para ti ahora</div>
+        <div id="media-output"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PANEL 4: PERFILES ═══════════ -->
+<div id="panel-perfiles" class="panel">
+  <div class="sec-head">
+    <div class="sec-title">🧠 ¿Cómo responde Kinet IA a cada atleta?</div>
+    <div class="sec-sub">Cada persona es diferente. Aquí puedes ver cómo Kinet IA adapta su tono y sus recomendaciones según la situación de cada atleta.</div>
+  </div>
+
+  <div class="ptabs" id="profile-tab-group">
+    <button class="ptab active" onclick="showProfile(0,this)">🏃 Ana — lesión</button>
+    <button class="ptab" onclick="showProfile(1,this)">⚽ Carlos — confianza</button>
+    <button class="ptab" onclick="showProfile(2,this)">🏊 Maya — sobreentrenamiento</button>
+    <button class="ptab" onclick="showProfile(3,this)">🚵 Diego — bloqueo mental</button>
+    <button class="ptab" onclick="showProfile(4,this)">🏋️ Sofía — presión externa</button>
+  </div>
+
+  <div id="profile-output"></div>
+</div>
+
+<!-- ═══════════ PANEL 5: CEM ═══════════ -->
+<div id="panel-cem" class="panel">
+  <div class="sec-head">
+    <div class="sec-title">⚖️ Los principios éticos de Kinet IA</div>
+    <div class="sec-sub">El Coeficiente de Entendimiento Moral (CEM) es la "brújula ética" de Kinet IA. Mide si sus recomendaciones son honestas, seguras y respetuosas contigo como persona.</div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-label">Ajusta cada principio ético y observa el resultado</div>
+
+      <div class="slider-row">
+        <div class="slider-top"><span class="slider-name">🧍 Autonomía del atleta</span><span class="slider-hint">¿Se respeta tu ritmo y tus decisiones?</span></div>
+        <div class="slider-wrap"><input type="range" id="cem-autonomy" min="0" max="100" value="82" step="1" oninput="updateCEM()"><div class="slider-val-badge" id="cem-av">82</div></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-top"><span class="slider-name">💪 Resiliencia</span><span class="slider-hint">¿Te ayuda a superar los obstáculos?</span></div>
+        <div class="slider-wrap"><input type="range" id="cem-resilience" min="0" max="100" value="76" step="1" oninput="updateCEM()"><div class="slider-val-badge" id="cem-rv">76</div></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-top"><span class="slider-name">💙 Empatía</span><span class="slider-hint">¿Te habla con calidez y comprensión?</span></div>
+        <div class="slider-wrap"><input type="range" id="cem-empathy" min="0" max="100" value="85" step="1" oninput="updateCEM()"><div class="slider-val-badge" id="cem-ev">85</div></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-top"><span class="slider-name">🎯 Integridad</span><span class="slider-hint">¿Es honesto sobre tu proceso deportivo?</span></div>
+        <div class="slider-wrap"><input type="range" id="cem-integrity" min="0" max="100" value="90" step="1" oninput="updateCEM()"><div class="slider-val-badge" id="cem-iv">90</div></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-top"><span class="slider-name">🛡️ Seguridad</span><span class="slider-hint">¿Ninguna recomendación pone en riesgo tu salud?</span></div>
+        <div class="slider-wrap"><input type="range" id="cem-safety" min="0" max="100" value="88" step="1" oninput="updateCEM()"><div class="slider-val-badge" id="cem-sv">88</div></div>
+      </div>
+      <div class="slider-row">
+        <div class="slider-top"><span class="slider-name">🏡 Equilibrio vida-deporte</span><span class="slider-hint">¿Cuida también tu vida fuera del deporte?</span></div>
+        <div class="slider-wrap"><input type="range" id="cem-life" min="0" max="100" value="72" step="1" oninput="updateCEM()"><div class="slider-val-badge" id="cem-lv">72</div></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card" style="text-align:center;padding:28px">
+        <div class="card-label">Puntuación ética global</div>
+        <div class="cem-big" id="cem-big">84.0</div>
+        <div style="margin-bottom:14px"><span class="chip" id="cem-chip">Nivel ético alto</span></div>
+        <div id="cem-impact"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">¿Qué significa cada principio ético?</div>
+    <div id="cem-table-body"></div>
+  </div>
+
+  <div class="fact-box">
+    <div class="fact-icon">🛡️</div>
+    <div class="fact-text"><strong>Regla de seguridad absoluta:</strong> Si la puntuación de Seguridad cae por debajo de 40, Kinet IA activa automáticamente un protocolo de emergencia y te conecta con un profesional humano. Tu bienestar siempre es lo primero.</div>
+  </div>
+</div>
+
+<!-- ═══════════ PANEL 6: ALGORITMOS ═══════════ -->
+<div id="panel-algo" class="panel">
+  <div class="sec-head">
+    <div class="sec-title">📐 ¿Cómo calcula Kinet IA tu plan?</div>
+    <div class="sec-sub">Sin códigos complicados ni lenguaje técnico. Aquí te explicamos paso a paso cómo funciona la inteligencia de Kinet IA.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Algoritmo CicloPlanner — cómo se calcula tu carga semanal</div>
+
+    <div class="algo-step">
+      <div class="algo-num">1</div>
+      <div class="algo-content">
+        <div class="algo-title">Leer tu estado del día</div>
+        <div class="algo-desc">Kinet IA recoge tres señales clave: <strong>cuánto cansancio físico sientes</strong> (Fatiga), <strong>cómo está tu cabeza</strong> (Desorientación emocional), y <strong>si tu cuerpo dice que está listo</strong> (Readiness). Sin estos datos, no ajusta nada.</div>
+      </div>
+    </div>
+
+    <div class="algo-step">
+      <div class="algo-num">2</div>
+      <div class="algo-content">
+        <div class="algo-title">Calcular el ajuste emocional</div>
+        <div class="algo-desc">Según tu estado de ánimo, Kinet IA aplica un pequeño descuento o aumento a tu carga. Si estás muy desorientado o agotado, reduce la carga para protegerte. Si estás motivado y centrado, puede aumentarla un poco.</div>
+        <div class="algo-formula">
+          <span class="label">Tabla de ajustes</span>
+          🌪️ Muy desorientado → resta 15% &nbsp;|&nbsp; 🔥 Muy fatigado → resta 25%<br>
+          😰 Presión extrema → resta 20% &nbsp;|&nbsp; 😊 Neutral → sin cambios<br>
+          🚀 Muy motivado y centrado → suma hasta 5%
+        </div>
+      </div>
+    </div>
+
+    <div class="algo-step">
+      <div class="algo-num">3</div>
+      <div class="algo-content">
+        <div class="algo-title">Calcular el factor de readiness y fatiga</div>
+        <div class="algo-desc">El <strong>Readiness</strong> (preparación) y la <strong>Fatiga</strong> funcionan como dos fuerzas opuestas. Si estás muy preparado, la carga sube; si hay mucha fatiga, baja. Se combinan en un solo número llamado <strong>Delta (Δ)</strong>.</div>
+        <div class="algo-formula">
+          <span class="label">Fórmula simplificada</span>
+          Δ = Ajuste emocional + (Readiness − 5) × 0.04 − (Fatiga × 0.05)<br>
+          <span style="color:var(--text-3);font-size:12px;font-weight:400">Un Δ positivo = más carga | Un Δ negativo = menos carga</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="algo-step">
+      <div class="algo-num">4</div>
+      <div class="algo-content">
+        <div class="algo-title">Calcular la carga final con límites de seguridad</div>
+        <div class="algo-desc">Se aplica el Δ a tu carga base. Pero siempre hay un <strong>suelo</strong> (nunca bajas del 60% de tu plan) y un <strong>techo</strong> (nunca superas el 125%). Así Kinet IA garantiza que el entrenamiento nunca sea peligroso ni inútil.</div>
+        <div class="algo-formula">
+          <span class="label">Carga final</span>
+          Carga hoy = Carga base × (1 + Δ)<br>
+          Límite mínimo: 60% de la carga base &nbsp;|&nbsp; Límite máximo: 125% de la carga base
+        </div>
+      </div>
+    </div>
+
+    <div class="algo-step">
+      <div class="algo-num">5</div>
+      <div class="algo-content">
+        <div class="algo-title">Calcular el bienestar general (CEM simplificado)</div>
+        <div class="algo-desc">Con tu fatiga y desorientación, Kinet IA calcula una puntuación de <strong>bienestar de 0 a 100</strong>. Esta puntuación también influye en el tono de sus respuestas: si bajas mucho, prioriza el apoyo emocional antes que el entrenamiento físico.</div>
+        <div class="algo-formula">
+          <span class="label">Cálculo de bienestar</span>
+          Bienestar = 100 − (Fatiga × 2.5 + Desorientación × 3) ÷ 2<br>
+          <span style="color:var(--text-3);font-size:12px;font-weight:400">Siempre entre 40 (mínimo) y 100 (máximo)</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="algo-step">
+      <div class="algo-num">6</div>
+      <div class="algo-content">
+        <div class="algo-title">Decidir el mensaje y los días de recuperación</div>
+        <div class="algo-desc">Con todos los datos, Kinet IA elige el tipo de mensaje correcto y cuántos días de recuperación necesitas antes de volver a entrenar con intensidad.</div>
+        <div class="algo-formula">
+          <span class="label">Reglas de decisión</span>
+          Fatiga ≥ 7 Y Desorientación ≥ 7 → 🔴 Crisis doble — 3 días de recuperación<br>
+          Fatiga ≥ 7 (solo) → 🔴 Fatiga alta — 3 días de recuperación<br>
+          Desorientación ≥ 7 (solo) → 💙 Apoyo emocional prioritario — 2 días<br>
+          Fatiga ≥ 5 o Desorientación ≥ 5 → 🟡 Alerta moderada — 2 días<br>
+          Todo bien → ✅ Condiciones óptimas — 1 día de descanso estándar
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">Cómo calcula el CEM (Coeficiente Ético Moral)</div>
+
+    <div class="algo-step">
+      <div class="algo-num">🧮</div>
+      <div class="algo-content">
+        <div class="algo-title">Fórmula del CEM</div>
+        <div class="algo-desc">El CEM suma los seis principios éticos, cada uno con su peso en la nota final. La integridad es la más importante (22%), porque la honestidad es la base de todo.</div>
+        <div class="algo-formula">
+          <span class="label">Peso de cada principio en la nota final</span>
+          🎯 Integridad: 22% &nbsp;|&nbsp; 🧍 Autonomía: 20% &nbsp;|&nbsp; 💙 Empatía: 20%<br>
+          💪 Resiliencia: 18% &nbsp;|&nbsp; 🛡️ Seguridad: 12% &nbsp;|&nbsp; 🏡 Equilibrio vida-deporte: 8%
+        </div>
+        <div class="algo-formula" style="margin-top:8px;border-color:rgba(248,113,113,0.3);">
+          <span class="label" style="color:var(--red)">Penalizaciones automáticas</span>
+          Si Seguridad &lt; 40 → se reduce el CEM total en un 25% + alerta de escalar a persona real<br>
+          Si Autonomía &lt; 30 → se reduce el CEM total en un 15% + alerta de dependencia
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fact-box">
+    <div class="fact-icon">🔍</div>
+    <div class="fact-text"><strong>Todo es trazable:</strong> Kinet IA guarda cada ajuste que hace (el "Δ" o Delta) para que en cualquier momento puedas ver exactamente por qué te recomendó lo que te recomendó. No hay cajas negras.</div>
+  </div>
+</div>
+
+</div><!-- /shell -->
+
+<script>
+/* ═══ DATOS ═══ */
+const schemas = {
+  users: {
+    title: '👤 Tu perfil de usuario',
+    desc: 'Información básica sobre ti como atleta.',
+    fields: [
+      { icon:'🆔', name:'Identificador único', type:'Texto único', desc:'Un código que te distingue de otros atletas. Nunca se comparte.' },
+      { icon:'📝', name:'Nombre completo', type:'Texto', desc:'Tu nombre real, usado para personalizar los mensajes.' },
+      { icon:'🏅', name:'Deporte principal', type:'Texto', desc:'El deporte o disciplina en que te entrenas.' },
+      { icon:'🎂', name:'Fecha de nacimiento', type:'Fecha', desc:'Para adaptar la intensidad y los ciclos a tu edad.' },
+      { icon:'🎵', name:'Ritmo personal (0–10)', type:'Número', desc:'Qué tan autónomo eres en tu entrenamiento. 10 = muy independiente.' },
+      { icon:'🧩', name:'Arquetipo de inicio', type:'Texto', desc:'Tu perfil inicial: Explorador, Logrador o Guardián. Define el estilo de tus primeras recomendaciones.' },
+      { icon:'✅', name:'Consentimiento de datos', type:'Sí / No', desc:'Si aceptaste que Kinet IA use tus datos para mejorar tu plan. Por defecto: No.' },
+    ]
+  },
+  sessions: {
+    title: '🏃 Tus sesiones de entrenamiento',
+    desc: 'Cada vez que entrenas, Kinet IA guarda un registro.',
+    fields: [
+      { icon:'📅', name:'Fecha de la sesión', type:'Fecha', desc:'Cuándo hiciste el entrenamiento.' },
+      { icon:'📆', name:'Semana del mesociclo', type:'Número', desc:'En qué semana de tu plan de mediano plazo estás.' },
+      { icon:'📊', name:'Carga planeada (%)', type:'Número', desc:'Lo que el plan decía que ibas a hacer ese día.' },
+      { icon:'💪', name:'Carga real (%)', type:'Número', desc:'Lo que realmente hiciste. Si difiere de lo planeado, Kinet IA aprende y ajusta.' },
+      { icon:'😴', name:'Fatiga reportada (0–10)', type:'Número', desc:'Cómo de cansado te sentías al terminar. Lo reportas tú mismo.' },
+      { icon:'🔋', name:'Readiness (0–1)', type:'Decimal', desc:'La preparación medida por tu pulsómetro o wearable (VFC / HRV).' },
+      { icon:'💥', name:'Esfuerzo percibido (RPE 1–10)', type:'Número', desc:'Qué tan duro te pareció ese entrenamiento subjetivamente.' },
+      { icon:'🔄', name:'¿Se recalibró el ciclo?', type:'Sí / No', desc:'Si Kinet IA tuvo que cambiar el plan ese día por tus datos.' },
+      { icon:'Δ', name:'Ajuste aplicado (Δ)', type:'Decimal', desc:'El número exacto con que se modificó tu carga. Permite rastrear cada decisión.' },
+    ]
+  },
+  emotional: {
+    title: '💙 Tus registros emocionales',
+    desc: 'Kinet IA guarda cómo te sentías en momentos clave.',
+    fields: [
+      { icon:'🕐', name:'Momento del registro', type:'Fecha y hora', desc:'Cuándo se detectó o reportó este estado emocional.' },
+      { icon:'🌀', name:'Nivel de desorientación (0–10)', type:'Número', desc:'Qué tan confusa o perdida estaba tu mente en ese momento.' },
+      { icon:'💬', name:'Emoción principal', type:'Texto', desc:'La emoción dominante: miedo a lesión, baja motivación, ansiedad, etc.' },
+      { icon:'⚡', name:'Factores desencadenantes', type:'Lista', desc:'Qué lo causó: presión del entrenador, dolor físico, mal resultado, etc.' },
+      { icon:'❤️', name:'Variabilidad cardíaca (HRV)', type:'Número', desc:'Dato del pulsómetro en ese momento. Un HRV bajo suele indicar estrés o fatiga.' },
+      { icon:'📝', name:'Nota ética de Kinet IA', type:'Texto largo', desc:'El mensaje personalizado que Kinet IA te envió en ese momento.' },
+      { icon:'👨‍⚕️', name:'¿Escalado a persona real?', type:'Sí / No', desc:'Si Kinet IA consideró que era necesario conectarte con un profesional humano.' },
+    ]
+  },
+  moral: {
+    title: '⚖️ Tu coeficiente ético moral (CEM)',
+    desc: 'El registro diario de la "brújula ética" de Kinet IA aplicada a tu caso.',
+    fields: [
+      { icon:'📅', name:'Fecha del cálculo', type:'Fecha', desc:'El CEM se recalcula cada día para reflejar tu estado actual.' },
+      { icon:'🧍', name:'Autonomía (0–100)', type:'Número', desc:'Qué tanto respetó Kinet IA tus tiempos y decisiones ese día.' },
+      { icon:'💪', name:'Resiliencia (0–100)', type:'Número', desc:'Cómo te ayudó a gestionar dificultades sin rendirte ni sobre-exigirte.' },
+      { icon:'💙', name:'Empatía (0–100)', type:'Número', desc:'Qué tan cálidas y contextualizadas fueron sus respuestas.' },
+      { icon:'🎯', name:'Integridad (0–100)', type:'Número', desc:'Qué tan honesto fue Kinet IA sobre tu proceso real, sin endulzar ni alarmar.' },
+      { icon:'🛡️', name:'Seguridad (0–100)', type:'Número', desc:'Confirmación de que ninguna recomendación puso en riesgo tu salud.' },
+      { icon:'🏡', name:'Equilibrio vida-deporte (0–100)', type:'Número', desc:'Si tus recomendaciones consideraron también tu vida fuera del deporte.' },
+      { icon:'⭐', name:'CEM compuesto final (0–100)', type:'Número', desc:'La nota ética final ponderada. Bajo 60 activa revisión; bajo 40 activa alerta.' },
+    ]
+  },
+  media: {
+    title: '🎬 Contenidos multimedia recomendados',
+    desc: 'Cada video, audio o imagen que Kinet IA te sugiere queda registrado.',
+    fields: [
+      { icon:'🎭', name:'Tipo de contenido', type:'Texto', desc:'Video, audio, imagen o texto. Cada tipo tiene un efecto psicológico diferente.' },
+      { icon:'🏷️', name:'Categoría del contenido', type:'Texto', desc:'Motivacional, técnico, calmante, de recuperación, etc.' },
+      { icon:'⏱️', name:'Duración (segundos)', type:'Número', desc:'Para que Kinet IA sugiera contenidos que se ajusten a tu tiempo disponible.' },
+      { icon:'🎯', name:'Prioridad (1–3)', type:'Número', desc:'1 = Alta (lo más importante), 2 = Media (complementario útil), 3 = Opcional.' },
+      { icon:'📈', name:'Puntuación de efectividad (0–1)', type:'Decimal', desc:'Qué tan bien funcionó ese contenido en sesiones anteriores. Kinet IA aprende de tu respuesta.' },
+    ]
+  }
+};
+
+const dbRecords = {
+  ana: {
+    name:'Ana Torres', sport:'Velocismo 100m', color:'#3d2a6e', initials:'AT',
+    fields: [
+      { icon:'😴', label:'Fatiga', value:'7 / 10', note:'Alta. El cuerpo pide descanso.' },
+      { icon:'😰', label:'Emoción principal', value:'Miedo a recaída', note:'Registrado tras la lesión isquiotibial.' },
+      { icon:'🌀', label:'Desorientación', value:'8 / 10', note:'Mente confusa. Kinet IA priorizó apoyo emocional.' },
+      { icon:'📊', label:'Carga real vs planeada', value:'52% de 85%', note:'Se redujo automáticamente al detectar la lesión.' },
+      { icon:'⚖️', label:'Bienestar ético (CEM)', value:'91 / 100', note:'Kinet IA actuó con alta integridad y empatía.' },
+      { icon:'💬', label:'Nota ética de Kinet IA', value:'"Tu cuerpo habla su propio idioma. Escucharlo hoy es la decisión más inteligente del macrociclo."', note:'' },
+    ]
+  },
+  carlos: {
+    name:'Carlos Ruiz', sport:'Fútbol — Mediocampista', color:'#0a4a3a', initials:'CR',
+    fields: [
+      { icon:'😴', label:'Fatiga', value:'4 / 10', note:'Moderada. El cuerpo está bien.' },
+      { icon:'😟', label:'Emoción principal', value:'Baja confianza', note:'Tras un error en partido decisivo.' },
+      { icon:'🌀', label:'Desorientación', value:'6 / 10', note:'Mente algo afectada por el error.' },
+      { icon:'📊', label:'Carga real vs planeada', value:'74% de 78%', note:'Casi sin ajuste físico — el problema era emocional.' },
+      { icon:'⚖️', label:'Bienestar ético (CEM)', value:'76 / 100', note:'Correcto. Se activó módulo de apoyo emocional.' },
+      { icon:'💬', label:'Nota ética de Kinet IA', value:'"Un error no define la carrera; cómo lo procesas sí define el carácter."', note:'' },
+    ]
+  },
+  maya: {
+    name:'Maya Chen', sport:'Natación — 200m espalda', color:'#0a3060', initials:'MC',
+    fields: [
+      { icon:'😴', label:'Fatiga', value:'9 / 10', note:'⚠️ Crítica. Sobreentrenamiento confirmado.' },
+      { icon:'😵', label:'Emoción principal', value:'Sobreentrenamiento', note:'Síntomas clásicos: insomnio, irritabilidad, rendimiento estancado.' },
+      { icon:'🌀', label:'Desorientación', value:'8 / 10', note:'Muy alta. Protocolo de descanso activado.' },
+      { icon:'📊', label:'Carga real vs planeada', value:'45% de 90%', note:'Reducción masiva por seguridad. El plan fue rediseñado.' },
+      { icon:'⚖️', label:'Bienestar ético (CEM)', value:'82 / 100', note:'Kinet IA priorizó la seguridad de Maya sobre los objetivos de rendimiento.' },
+      { icon:'💬', label:'Nota ética de Kinet IA', value:'"La superación sostenible requiere descanso. Parar hoy es ganar mañana."', note:'' },
+    ]
+  }
+};
+
+const mediaMap = {
+  low_motivation: [
+    { icon:'▶️', bg:'#2d1f5e', lbl:'Video motivacional de atletas reales', desc:'Historias de deportistas que superaron bloqueos similares al tuyo — cercano, no artificial.', type:'📽️ Video', tag:'Motivación', prio:'Alta', prioColor:'var(--purple)' },
+    { icon:'🎵', bg:'#0a4a3a', lbl:'Audio binaural de enfoque', desc:'12 minutos de sonido para activar tu concentración sin esfuerzo consciente.', type:'🎧 Audio', tag:'Enfoque', prio:'Media', prioColor:'var(--teal)' },
+    { icon:'✏️', bg:'#4a3a10', lbl:'Micro-reto de 5 minutos', desc:'Un desafío concreto y pequeño para romper la inercia del día.', type:'📄 Texto', tag:'Acción', prio:'Complementario', prioColor:'var(--text-3)' }
+  ],
+  tech_doubt: [
+    { icon:'🖼️', bg:'#0a3060', lbl:'Diagrama biomecánico claro', desc:'Imágenes con flechas y puntos clave para entender exactamente qué mejorar.', type:'🖼️ Imagen', tag:'Técnico', prio:'Alta', prioColor:'var(--purple)' },
+    { icon:'▶️', bg:'#2d1f5e', lbl:'Video en cámara lenta', desc:'Comparativa frame a frame del gesto técnico correcto vs. el tuyo.', type:'📽️ Video', tag:'Análisis', prio:'Media', prioColor:'var(--teal)' },
+    { icon:'✅', bg:'#0a4a3a', lbl:'Lista de 5 puntos de autocorrección', desc:'Guía rápida para corregirte tú mismo durante el entrenamiento.', type:'📄 Texto', tag:'Guía', prio:'Complementario', prioColor:'var(--text-3)' }
+  ],
+  overtraining: [
+    { icon:'🧘', bg:'#0a4a3a', lbl:'Meditación guiada de recuperación', desc:'10 minutos para bajar el cortisol y activar el sistema nervioso parasimpático.', type:'🎧 Audio', tag:'Recuperación', prio:'Alta', prioColor:'var(--purple)' },
+    { icon:'🍎', bg:'#4a1a10', lbl:'Infografía de recuperación semana de descarga', desc:'Protocolo de nutrición y sueño para la semana de recuperación activa.', type:'🖼️ Imagen', tag:'Recuperación', prio:'Media', prioColor:'var(--teal)' },
+    { icon:'📓', bg:'#4a3a10', lbl:'Diario de síntomas', desc:'Un registro estructurado para detectar cuándo estás en riesgo antes de llegar al límite.', type:'📄 Texto', tag:'Monitoreo', prio:'Complementario', prioColor:'var(--text-3)' }
+  ],
+  high_confidence: [
+    { icon:'🚀', bg:'#2d1f5e', lbl:'Sesión de activación avanzada', desc:'Una rutina de alta intensidad diseñada para tu peak de forma actual.', type:'📽️ Video', tag:'Rendimiento', prio:'Alta', prioColor:'var(--purple)' },
+    { icon:'🎵', bg:'#0a4a3a', lbl:'Playlist para estado de flujo', desc:'Curada para mantener la activación óptima durante toda la sesión.', type:'🎧 Audio', tag:'Enfoque', prio:'Media', prioColor:'var(--teal)' },
+    { icon:'🎯', bg:'#0a3060', lbl:'Objetivo ambicioso del día', desc:'Una meta medible para aprovechar tu momento de máxima confianza.', type:'📄 Texto', tag:'Desafío', prio:'Complementario', prioColor:'var(--text-3)' }
+  ],
+  pre_comp_anxiety: [
+    { icon:'🌬️', bg:'#0a4a3a', lbl:'Ejercicio de respiración 4-7-8', desc:'Técnica probada para calmar el sistema nervioso antes de competir.', type:'🎧 Audio', tag:'Calma', prio:'Alta', prioColor:'var(--purple)' },
+    { icon:'🧠', bg:'#0a3060', lbl:'Visualización guiada de la competencia', desc:'8 minutos imaginando el escenario ideal paso a paso para preparar la mente.', type:'🖼️ Imagen', tag:'Mental', prio:'Media', prioColor:'var(--teal)' },
+    { icon:'💬', bg:'#2d1f5e', lbl:'Afirmaciones de proceso', desc:'Recordatorios de todo el trabajo que ya has hecho. Mereces estar ahí.', type:'📄 Texto', tag:'Confianza', prio:'Complementario', prioColor:'var(--text-3)' }
+  ],
+  injury_fear: [
+    { icon:'🩹', bg:'#2d1f5e', lbl:'Video de retorno progresivo', desc:'Protocolo de rehabilitación gradual validado por fisioterapia. Sin apuro.', type:'📽️ Video', tag:'Rehabilitación', prio:'Alta', prioColor:'var(--purple)' },
+    { icon:'💬', bg:'#0a4a3a', lbl:'Conversación de apoyo con Kinet IA', desc:'Escucha activa sobre el miedo a la recaída. No estás solo en esto.', type:'📄 Texto', tag:'Apoyo', prio:'Media', prioColor:'var(--teal)' },
+    { icon:'🎙️', bg:'#4a1a10', lbl:'Historia de atleta post-lesión', desc:'Testimonio de alguien que pasó por algo similar y volvió más fuerte.', type:'🎧 Audio', tag:'Inspiración', prio:'Complementario', prioColor:'var(--text-3)' }
+  ]
+};
+
+const profiles = [
+  {
+    name:'Ana Torres', age:22, sport:'Velocismo 100m', initials:'AT', acolor:'#3d2a6e',
+    crisis:'Lesión isquiotibial en semana de pico de carga',
+    fatigue:8, emotion:9, confidence:3, moral:89,
+    symptoms:['💢 Dolor muscular residual','😨 Miedo a recaída','😤 Baja tolerancia a la frustración'],
+    tone:'Empático y técnico — Ana necesita que se le escuche antes de que se le diga qué hacer',
+    response:'¡Hola Ana! Escuchar a tu cuerpo no es rendirse — es inteligencia deportiva de nivel élite. Tu isquiotibial necesita 3 a 5 días de carga reducida al 40%. Te armé un plan con movilidad en piscina y trabajo mental de visualización para que sigas entrenando la mente mientras el músculo sana. ¿Arrancamos con 15 min de activación suave hoy? 💪',
+    adj:['Carga reducida al 40%','Activación en piscina','Visualización mental diaria']
+  },
+  {
+    name:'Carlos Ruiz', age:19, sport:'Fútbol — Mediocampista', initials:'CR', acolor:'#0a4a3a',
+    crisis:'Pérdida de confianza después de un error en partido decisivo',
+    fatigue:4, emotion:7, confidence:2, moral:75,
+    symptoms:['🧠 Autocrítica excesiva','😬 Miedo al balón en zonas clave','😶 Aislamiento del equipo'],
+    tone:'Directo y motivador — Carlos necesita hechos concretos, no consuelos vagos',
+    response:'Oye Carlos, ese error en el partido no define quién eres como jugador. Xavi tuvo rachas de 6 partidos con pases imprecisos y siguió siendo el mejor. Tu cerebro está aprendiendo. Esta semana: 3 ejercicios de posesión bajo presión para reconstruir la confianza desde adentro. ¿Vamos a ello?',
+    adj:['Toma de decisiones bajo presión','Role-playing táctico','Sin métricas de presión esta semana']
+  },
+  {
+    name:'Maya Chen', age:25, sport:'Natación — 200m espalda', initials:'MC', acolor:'#0a3060',
+    crisis:'Síndrome de sobreentrenamiento confirmado por datos',
+    fatigue:9, emotion:8, confidence:5, moral:82,
+    symptoms:['😴 Insomnio con frecuencia cardíaca elevada en reposo','😠 Irritabilidad y pérdida de motivación','📉 Rendimiento estancado 3 semanas seguidas'],
+    tone:'Calmado y científico — Maya es analítica y confía en los datos más que en las emociones',
+    response:'Maya, los datos no mienten y tú lo sabes: 9/10 en fatiga con insomnio activo es sobreentrenamiento clásico. No es debilidad — es que tu motor necesita aceite. Esta semana: cero alta intensidad, 2 sesiones de yoga acuático y revisión del protocolo de sueño. Tu próximo peak va a ser mucho más alto desde este descanso.',
+    adj:['Semana de descarga total','Yoga acuático 2x','Análisis de VFC diario']
+  },
+  {
+    name:'Diego Vargas', age:17, sport:'Ciclismo de montaña', initials:'DV', acolor:'#4a3a10',
+    crisis:'Bloqueo mental ante competencias con público',
+    fatigue:3, emotion:8, confidence:2, moral:78,
+    symptoms:['💓 Taquicardia antes de salir','🤯 Olvido de técnica que domina perfectamente','😶 Mente en blanco en el momento clave'],
+    tone:'Joven, cercano y divertido — Diego tiene 17 años y necesita un lenguaje de su generación',
+    response:'¡Diego! Lo que describes tiene nombre: "parálisis por análisis" y le pasa hasta a ciclistas PRO. La buena noticia: se entrena igual que cualquier bajada difícil. Te pongo un ritual de 3 minutos antes de cada largada: respiración + visualización + una frase que tú elijas. Vamos a que el público sea tu combustible, no tu freno. 🚵',
+    adj:['Protocolo pre-competencia 3 min','Exposición gradual con público','Rutina de activación mental']
+  },
+  {
+    name:'Sofía Mendez', age:23, sport:'Atletismo — Lanzamiento de bala', initials:'SM', acolor:'#4a1a10',
+    crisis:'Presión excesiva del entrenador y la familia',
+    fatigue:6, emotion:9, confidence:4, moral:70,
+    symptoms:['😞 Entrena por obligación, no por disfrute','😨 Sueños relacionados con el fracaso','🤔 Pérdida de identidad fuera del deporte'],
+    tone:'Reflexivo y ético — Sofía necesita permiso para decidir ella misma qué quiere',
+    response:'Sofía, lo que sientes es válido y valiente reconocerlo. El alto rendimiento que vale la pena es el que TÚ eliges, no el que otros proyectan. Esta semana: una sesión sin cronómetro, sin métricas, solo para reconectar con por qué empezaste. La bala vuela más lejos cuando la mente está libre.',
+    adj:['Sesión libre sin métricas','Conversación sobre motivación intrínseca','Establecer límites saludables con entrenador']
+  }
+];
+
+const cemPrinciples = [
+  { icon:'🎯', name:'Integridad', peso:'22%', desc:'Kinet IA siempre dice la verdad sobre tu proceso, aunque no sea lo que quieres escuchar.', umbral:'Si baja de 45 → se auditan todas las recomendaciones recientes.' },
+  { icon:'🧍', name:'Autonomía', peso:'20%', desc:'Tu ritmo y tus decisiones son respetados. Kinet IA propone, nunca impone.', umbral:'Si baja de 30 → alerta de dependencia excesiva del atleta.' },
+  { icon:'💙', name:'Empatía', peso:'20%', desc:'Cada respuesta adapta el tono a tu estado emocional. No hay respuestas genéricas.', umbral:'Si baja de 40 → revisión del tono de todas las respuestas.' },
+  { icon:'💪', name:'Resiliencia', peso:'18%', desc:'Kinet IA te ayuda a ver los obstáculos como parte del proceso, no como fracasos.', umbral:'Si baja de 35 → refuerzo del módulo de apoyo emocional.' },
+  { icon:'🛡️', name:'Seguridad', peso:'12%', desc:'Ninguna recomendación puede comprometer tu salud física o mental. Es la línea roja.', umbral:'Si baja de 40 → ALERTA. Se activa escalada a persona real.' },
+  { icon:'🏡', name:'Equilibrio vida-deporte', peso:'8%', desc:'El deporte no lo es todo. Kinet IA considera tu vida familiar, estudios y relaciones.', umbral:'Si baja de 30 → se activa el módulo de equilibrio integral.' }
+];
+
+/* ═══ PANEL SWITCHING ═══ */
+function showPanel(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  if (btn) btn.classList.add('active');
+  if (name === 'db') { showSchema('users', document.querySelector('.ptab')); updateDbQuery(); }
+  if (name === 'media') orchestrate();
+  if (name === 'perfiles') showProfile(0, document.querySelector('.ptab'));
+  if (name === 'cem') { updateCEM(); buildCEMTable(); }
+}
+
+/* ═══ MOTOR ═══ */
+function recalculate() {
+  const F = +document.getElementById('fatigue').value;
+  const E = +document.getElementById('emotion').value;
+  const R = +document.getElementById('readiness').value;
+  const rpe = +document.getElementById('rpe').value;
+  const W = +document.getElementById('week').value;
+  const Lb = +document.getElementById('lbase').value;
+
+  document.getElementById('fv').textContent = F;
+  document.getElementById('ev').textContent = E;
+  document.getElementById('rv').textContent = R;
+  document.getElementById('rpv').textContent = rpe;
+  document.getElementById('wv').textContent = W;
+  document.getElementById('lv').textContent = Lb;
+
+  // Color feedback on badges
+  colorBadge('fv', F, 10, true);
+  colorBadge('ev', E, 10, true);
+  colorBadge('rv', R, 10, false);
+
+  const moodMap = {
+    9:{adj:-0.25,key:'fatiga acumulada'}, 8:{adj:-0.25,key:'fatiga acumulada'},
+    7:{adj:-0.20,key:'presión alta'}, 6:{adj:-0.15,key:'desorientación'},
+    5:{adj:-0.15,key:'desorientación'}, 4:{adj:0,key:'neutral'}, 3:{adj:0,key:'neutral'},
+    2:{adj:0.02,key:'bien'}, 1:{adj:0.04,key:'muy bien'}, 0:{adj:0.05,key:'excelente'}
+  };
+  const moodAdj = (moodMap[E] || {adj:0}).adj;
+  const readinessFactor = (R / 10 - 0.5) * 0.4;
+  const fatigueFactor = (F / 10) * 0.5;
+  const delta = moodAdj + readinessFactor - fatigueFactor;
+  const Lmin = Lb * 0.6, Lmax = Lb * 1.25;
+  const TLw = Math.round(Math.min(Lmax, Math.max(Lmin, Lb * (1 + delta))));
+  const loadPct = Math.round((TLw / Lb) * 100);
+  const cem = Math.round(Math.max(40, 100 - (F * 2.5 + E * 3) / 2));
+  const recov = F >= 7 ? 3 : F >= 5 ? 2 : 1;
+  const macroLen = R >= 8 ? '12–16 sem' : R >= 6 ? '10–14 sem' : '8–12 sem';
+
+  document.getElementById('m-load').textContent = loadPct + '%';
+  document.getElementById('m-cem').textContent = cem;
+  document.getElementById('m-rec').textContent = recov + 'd';
+  document.getElementById('m-macro').textContent = macroLen;
+
+  document.getElementById('prog-load').style.width = loadPct + '%';
+  document.getElementById('prog-cem').style.width = cem + '%';
+  document.getElementById('prog-load-lbl').textContent = loadPct + '%';
+  document.getElementById('prog-cem-lbl').textContent = cem + '%';
+
+  const deltaStr = (delta >= 0 ? '+' : '') + (delta * 100).toFixed(0) + '%';
+  document.getElementById('chip-delta').textContent = 'Ajuste aplicado: ' + deltaStr;
+
+  let estado, chipClass, boxClass, msg;
+  if (F >= 7 && E >= 7) {
+    estado = '⚠️ Crisis doble detectada'; chipClass = 'chip-red'; boxClass = 'alert';
+    msg = `⚠️ Señal de alarma: tu fatiga (${F}/10) y tu desorientación emocional (${E}/10) están ambas en zona crítica. Kinet IA ha reducido tu carga al ${loadPct}% del plan. Necesitas ${recov} días de recuperación activa antes de volver a alta intensidad. Tu bienestar general baja a ${cem}/100 — se activa soporte ético prioritario. Se recomienda macrociclo más corto (${macroLen}).`;
+  } else if (F >= 7) {
+    estado = '🔴 Fatiga alta'; chipClass = 'chip-red'; boxClass = 'alert';
+    msg = `Tu cuerpo está muy cansado (fatiga ${F}/10 en semana ${W}). Kinet IA reduce tu entrenamiento de hoy al ${loadPct}% para que puedas recuperarte. Necesitas ${recov} días de descanso activo. RPE ${rpe} indica que ya estás trabajando cerca del límite — el protocolo de descarga está activado. Ajuste aplicado: ${deltaStr}.`;
+  } else if (E >= 7) {
+    estado = '💙 Apoyo emocional activado'; chipClass = 'chip-amber'; boxClass = 'warn';
+    msg = `Tu mente necesita atención hoy (desorientación ${E}/10). Kinet IA baja la carga al ${loadPct}% para que puedas procesar lo que sientes sin presión adicional. Bienestar: ${cem}/100. ContentEngine está eligiendo contenidos de apoyo para ti ahora mismo.`;
+  } else if (F >= 5 || E >= 5) {
+    estado = '🟡 Señales moderadas'; chipClass = 'chip-amber'; boxClass = 'warn';
+    msg = `Hay algunas señales a vigilar (fatiga ${F}/10, emoción ${E}/10). La carga se ajusta al ${loadPct}% — un poco menos para darte margen. Tu ritmo personal está estable. RPE sugerido para hoy: ${Math.max(4, rpe - 2)}/10. Ajuste aplicado: ${deltaStr}.`;
+  } else {
+    estado = '✅ Condiciones óptimas'; chipClass = 'chip-teal'; boxClass = 'ok';
+    msg = `¡Todo en verde! Tus condiciones físicas y emocionales son excelentes hoy. La carga se mantiene al ${loadPct}%, bienestar ${cem}/100. Estás en semana ${W} de tu plan (${macroLen}). El RPE ${rpe} es coherente con lo planeado. Ajuste: ${deltaStr}. ¡Momento de brillar!`;
+  }
+
+  const chipEl = document.getElementById('chip-estado');
+  chipEl.textContent = estado;
+  chipEl.className = 'chip ' + chipClass;
+  const box = document.getElementById('motor-output');
+  box.textContent = msg;
+  box.className = 'info-box ' + boxClass;
+}
+
+function colorBadge(id, val, max, highIsBad) {
+  const el = document.getElementById(id);
+  const ratio = val / max;
+  let color;
+  if (highIsBad) {
+    color = ratio > 0.7 ? 'var(--red)' : ratio > 0.4 ? 'var(--amber)' : 'var(--teal)';
+  } else {
+    color = ratio > 0.7 ? 'var(--teal)' : ratio > 0.4 ? 'var(--amber)' : 'var(--red)';
+  }
+  el.style.color = color;
+  el.style.borderColor = color.replace(')', ',0.4)').replace('var(', 'rgba(').replace('--red','248,113,113').replace('--amber','251,191,36').replace('--teal','52,211,153');
+}
+
+/* ═══ DATABASE ═══ */
+function showSchema(key, btn) {
+  if (btn) {
+    document.querySelectorAll('#panel-db .ptab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const s = schemas[key];
+  document.getElementById('schema-display').innerHTML = `
+    <div style="margin-bottom:14px">
+      <div style="font-size:16px;font-weight:700;margin-bottom:4px">${s.title}</div>
+      <div style="font-size:13px;color:var(--text-2)">${s.desc}</div>
+    </div>
+    <div class="db-table-visual">
+      <div class="db-table-head">📋 Campo &nbsp;&nbsp; | &nbsp;&nbsp; Tipo &nbsp;&nbsp; | &nbsp;&nbsp; Para qué sirve</div>
+      ${s.fields.map(f => `
+        <div class="db-row">
+          <div class="db-col-name"><span class="db-row-emoji">${f.icon}</span>${f.name}</div>
+          <div class="db-col-type">${f.type}</div>
+          <div class="db-col-desc">${f.desc}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function updateDbQuery() {
+  const k = document.getElementById('db-athlete').value;
+  const r = dbRecords[k];
+  document.getElementById('db-output').innerHTML = `
+    <div class="athlete-record">
+      <div class="rec-header">
+        <div class="avatar" style="background:${r.color}">${r.initials}</div>
+        <div>
+          <div class="rec-name">${r.name}</div>
+          <div class="rec-sport">${r.sport}</div>
+        </div>
+      </div>
+      <div class="rec-fields">
+        ${r.fields.map(f => `
+          <div class="rec-field">
+            <div class="rec-field-icon">${f.icon}</div>
+            <div style="flex:1">
+              <div class="rec-field-label">${f.label}</div>
+              <div class="rec-field-value">${f.value}</div>
+              ${f.note ? `<div class="rec-field-note">${f.note}</div>` : ''}
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+/* ═══ ORQUESTADOR ═══ */
+function orchestrate() {
+  const mood = document.getElementById('mood').value;
+  const intensity = +document.getElementById('mood-int').value;
+  document.getElementById('miv').textContent = intensity;
+  const items = mediaMap[mood];
+  const labels = {
+    low_motivation:'😞 Baja motivación', tech_doubt:'🤔 Duda técnica',
+    overtraining:'😵 Sobreentrenamiento', high_confidence:'🚀 Alta confianza',
+    pre_comp_anxiety:'😰 Ansiedad pre-competencia', injury_fear:'🩹 Miedo a lesión'
+  };
+  const intLabels = ['','Leve','Moderada','Marcada','Intensa','Máxima'];
+  const chipColors = {
+    low_motivation:'chip-red', tech_doubt:'chip-amber', overtraining:'chip-red',
+    high_confidence:'chip-teal', pre_comp_anxiety:'chip-amber', injury_fear:'chip-amber'
+  };
+
+  document.getElementById('media-state-display').innerHTML = `
+    <div style="margin-bottom:10px">
+      <div style="font-size:12px;color:var(--text-2);margin-bottom:6px">Estado detectado por EmoMap</div>
+      <span class="chip ${chipColors[mood]}">${labels[mood]}</span>
+      <span class="chip chip-purple" style="margin-left:6px">Intensidad: ${intLabels[intensity]}</span>
+    </div>
+    <div style="font-size:13px;color:var(--text-2);line-height:1.65">
+      EmoMap ha clasificado tu estado y ContentEngine ha seleccionado <strong>${items.length} recursos</strong> ordenados por prioridad. A mayor intensidad del estado, más urgente es el recurso de mayor prioridad.
+    </div>`;
+
+  document.getElementById('media-output').innerHTML = items.map(item => `
+    <div class="media-item">
+      <div class="media-icon" style="background:${item.bg};font-size:20px">${item.icon}</div>
+      <div class="media-info">
+        <div class="media-title">${item.lbl}</div>
+        <div class="media-desc">${item.desc}</div>
+        <div class="media-tags">
+          <span class="chip chip-purple" style="font-size:11px">${item.type}</span>
+          <span class="chip chip-teal" style="font-size:11px">${item.tag}</span>
+        </div>
+      </div>
+      <div class="media-priority" style="color:${item.prioColor}">${item.prio}</div>
+    </div>`).join('');
+}
+
+/* ═══ PROFILES ═══ */
+function showProfile(idx, btn) {
+  if (btn) {
+    document.querySelectorAll('#profile-tab-group .ptab').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  const p = profiles[idx];
+  const bar = (v, max, color) => `<div class="prog-track" style="height:7px;margin-top:4px"><div class="prog-fill" style="width:${(v/max)*100}%;background:${color}"></div></div>`;
+
+  document.getElementById('profile-output').innerHTML = `
+    <div class="card profile-card">
+      <div class="athlete-header" style="display:flex;align-items:center;gap:14px;margin-bottom:16px">
+        <div class="avatar" style="background:${p.acolor};width:56px;height:56px;font-size:16px">${p.initials}</div>
+        <div style="flex:1">
+          <div style="font-size:18px;font-weight:800;font-family:'Nunito',sans-serif">${p.name}</div>
+          <div style="font-size:13px;color:var(--text-2)">${p.sport} · ${p.age} años</div>
+        </div>
+        <span class="chip chip-red">Crisis activa</span>
+      </div>
+
+      <div class="crisis-box">
+        <div class="crisis-label">⚠️ Situación de crisis detectada</div>
+        <div class="crisis-text">${p.crisis}</div>
+      </div>
+
+      <div class="grid-4" style="margin-bottom:18px">
+        <div class="metric-card" style="padding:12px">
+          <div style="font-size:22px;font-weight:900;color:var(--red);font-family:'Nunito',sans-serif">${p.fatigue}/10</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:3px">Fatiga física</div>
+          ${bar(p.fatigue,10,'var(--red)')}
+        </div>
+        <div class="metric-card" style="padding:12px">
+          <div style="font-size:22px;font-weight:900;color:var(--amber);font-family:'Nunito',sans-serif">${p.emotion}/10</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:3px">Desorientación</div>
+          ${bar(p.emotion,10,'var(--amber)')}
+        </div>
+        <div class="metric-card" style="padding:12px">
+          <div style="font-size:22px;font-weight:900;color:var(--purple);font-family:'Nunito',sans-serif">${p.confidence}/10</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:3px">Confianza</div>
+          ${bar(p.confidence,10,'var(--purple)')}
+        </div>
+        <div class="metric-card" style="padding:12px">
+          <div style="font-size:22px;font-weight:900;color:var(--teal);font-family:'Nunito',sans-serif">${p.moral}</div>
+          <div style="font-size:11px;color:var(--text-2);margin-top:3px">CEM</div>
+          ${bar(p.moral,100,'var(--teal)')}
+        </div>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:8px">Síntomas detectados</div>
+        ${p.symptoms.map(s => `<span class="chip chip-red" style="margin:3px 4px 3px 0">${s}</span>`).join('')}
+      </div>
+
+      <div class="sep"></div>
+
+      <div style="margin-bottom:14px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:6px">Tono elegido por Kinet IA</div>
+        <span class="chip chip-blue">${p.tone}</span>
+      </div>
+
+      <div class="kinet-response">
+        <div class="kinet-label">🤖 Respuesta de Kinet IA</div>
+        ${p.response}
+      </div>
+
+      <div style="margin-top:14px">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-3);margin-bottom:8px">Ajustes automáticos del plan</div>
+        ${p.adj.map(a => `<span class="adj-tag">✓ ${a}</span>`).join('')}
+      </div>
+    </div>`;
+}
+
+/* ═══ CEM ═══ */
+function updateCEM() {
+  const a = +document.getElementById('cem-autonomy').value;
+  const r = +document.getElementById('cem-resilience').value;
+  const e = +document.getElementById('cem-empathy').value;
+  const i = +document.getElementById('cem-integrity').value;
+  const s = +document.getElementById('cem-safety').value;
+  const l = +document.getElementById('cem-life').value;
+
+  ['cem-av','cem-rv','cem-ev','cem-iv','cem-sv','cem-lv'].forEach((id,idx) => {
+    document.getElementById(id).textContent = [a,r,e,i,s,l][idx];
+  });
+
+  let cem = a*0.20 + r*0.18 + e*0.20 + i*0.22 + s*0.12 + l*0.08;
+  if (s < 40) cem *= 0.75;
+  if (a < 30) cem *= 0.85;
+  cem = Math.round(cem * 10) / 10;
+
+  document.getElementById('cem-big').textContent = cem.toFixed(1);
+  let cemColor, cemLabel, cemChip;
+  if (cem >= 80) { cemColor='var(--teal)'; cemLabel='✅ Nivel ético alto'; cemChip='chip-teal'; }
+  else if (cem >= 60) { cemColor='var(--amber)'; cemLabel='⚠️ Nivel ético moderado'; cemChip='chip-amber'; }
+  else { cemColor='var(--red)'; cemLabel='🔴 Alerta ética — revisar'; cemChip='chip-red'; }
+
+  document.getElementById('cem-big').style.color = cemColor;
+  const chip = document.getElementById('cem-chip');
+  chip.textContent = cemLabel; chip.className = 'chip ' + cemChip;
+
+  const dims = [
+    { label:'🧍 Autonomía', val:a, color:'var(--purple)' },
+    { label:'💪 Resiliencia', val:r, color:'var(--teal)' },
+    { label:'💙 Empatía', val:e, color:'var(--purple)' },
+    { label:'🎯 Integridad', val:i, color:'var(--amber)' },
+    { label:'🛡️ Seguridad', val:s, color:s<40?'var(--red)':'var(--teal)' },
+    { label:'🏡 Vida-deporte', val:l, color:'var(--amber)' }
+  ];
+
+  document.getElementById('cem-impact').innerHTML = dims.map(d => `
+    <div class="cem-dim-row">
+      <span class="cem-dim-label">${d.label}</span>
+      <div class="cem-track"><div class="cem-fill" style="width:${d.val}%;background:${d.color}"></div></div>
+      <span class="cem-num" style="color:${d.color}">${d.val}</span>
+    </div>`).join('') + `
+    <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:8px;font-size:13px;line-height:1.6">
+      ${s < 40
+        ? `<span style="color:var(--red)">🚨 Seguridad por debajo de 40 — penalización del 25% aplicada. Kinet IA escalaría este caso a un profesional humano.</span>`
+        : a < 30
+        ? `<span style="color:var(--amber)">⚠️ Autonomía baja — penalización del 15%. Se revisaría si el atleta depende demasiado de la IA.</span>`
+        : `<span style="color:var(--teal)">✅ Sin penalizaciones activas. CEM calculado limpiamente.</span>`}
+    </div>`;
+}
+
+function buildCEMTable() {
+  document.getElementById('cem-table-body').innerHTML = cemPrinciples.map(p => `
+    <div class="algo-step" style="margin-bottom:8px">
+      <div class="algo-num" style="width:36px;height:36px;font-size:18px">${p.icon}</div>
+      <div class="algo-content">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+          <div class="algo-title" style="margin:0">${p.name}</div>
+          <span class="chip chip-purple" style="font-size:11px">${p.peso} del CEM</span>
+        </div>
+        <div class="algo-desc">${p.desc}</div>
+        <div style="margin-top:6px;font-size:12px;color:var(--amber)">⚡ ${p.umbral}</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ═══ INIT ═══ */
+recalculate();
+showSchema('users', null);
+updateDbQuery();
+orchestrate();
+showProfile(0, null);
+updateCEM();
+buildCEMTable();
+</script>
+</body>
+</html>
